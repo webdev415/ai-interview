@@ -6,7 +6,7 @@ YOU MUST DO IN-DEPTH RESEARCH, FOLLOW THE <RESEARCH PROCESS>
 
    - Don't only research one page, and don't use your own webscraping tool - instead scrape many relevant pages from all documentation links mentioned in the initial.md file
    - Take my tech as sacred truth, for example if I say a model name then research that model name for LLM usage - don't assume from your own knowledge at any point
-   - When I say don't just research one page, I mean do incredibly in-depth research, like to the ponit where it's just absolutely ridiculous how much research you've actually done, then when you creat the PRD document you need to put absolutely everything into that including INCREDIBLY IN DEPTH CODE EXMAPLES so any AI can pick up your PRD and generate WORKING and COMPLETE production ready code.
+   - When I say don't just research one page, I mean do incredibly in-depth research, like to the ponit where it's just absolutely ridiculous how much research you've actually done, then when you creat the PRD document you need to put absolutely everything into that including references to the .md files you put inside the /research/ directory so any AI can pick up your PRD and generate WORKING and COMPLETE production ready code.
 
 </RESEARCH PROCESS>
 
@@ -39,16 +39,13 @@ The AI agent only gets the context you are appending to the PRP and training dat
 
 ## PRP Generation
 
-Generate 2 Phases
-
-Phase 1: Skeleton Code with detailed implementation comments on exactly how to implement it
-Phase 2: Full and complete production ready code with every single feature fully implemented
+Generate a PRP and save to the PRPs directory.   
 
 Using PRPs/templates/prp_base.md as template:
 
 ### Critical Context to Include and pass to the AI agent as part of the PRP
 - **Documentation**: URLs with specific sections
-- **Code Examples**: Real snippets from codebase
+- **Code Examples**: Real references to .md documentation
 - **Gotchas**: Library quirks, version issues
 - **Patterns**: Existing approaches to follow
 
@@ -73,8 +70,9 @@ uv run pytest tests/ -v
 *** ULTRATHINK ABOUT THE PRP AND PLAN YOUR APPROACH THEN START WRITING THE PRP ***
 
 ## Output
-Save as: `PRPs/{phase-1-feature-name}.md`
-Save as: `PRPs/{phase-2-feature-name}.md`
+
+Save as: `PRPs/{project-name}.md`
+
 
 ## Quality Checklist
 - [ ] All necessary context included

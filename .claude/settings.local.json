@@ -27,7 +27,10 @@
       "Bash(chmod:*)",
       "Bash(git add:*)",
       "Bash(git reset:*)",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(./quick-setup.sh:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }
