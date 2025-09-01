@@ -63,7 +63,7 @@ php-agentic-framework/
 
 # Exclude actual implementation but keep examples
 backend/
-frontend/
+# frontend/ - Temporarily allow frontend for OpenAI Whisper implementation
 docker-compose.yml
 nginx.conf
 test-system.sh
