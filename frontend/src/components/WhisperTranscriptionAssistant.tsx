@@ -58,7 +58,8 @@ export default function WhisperTranscriptionAssistant() {
       whisperService.current = new WhisperService({
         apiKey,
         model: 'whisper-1',
-        language: 'en'
+        language: 'en',
+        prompt: 'This is an interview or meeting transcript. Clear speech with multiple speakers.'
       });
     } else {
       hybridService.current = new HybridTranscriptionService(apiKey);
@@ -129,7 +130,7 @@ export default function WhisperTranscriptionAssistant() {
         const minutesElapsed = (Date.now() - startTime.current) / 1000 / 60;
         setProcessingCost(minutesElapsed * 0.006);
       },
-      10000 // Process every 10 seconds for cost efficiency
+      30000 // Process every 30 seconds to avoid rate limits
     );
 
     // Start dual audio capture
@@ -297,7 +298,7 @@ export default function WhisperTranscriptionAssistant() {
                   className="mr-2"
                 />
                 <span className="text-sm">
-                  <strong>Pure Whisper:</strong> Maximum accuracy, 10-second delay, most cost-effective
+                  <strong>Pure Whisper:</strong> Maximum accuracy, 30-second processing intervals, most cost-effective
                 </span>
               </label>
             </div>
@@ -316,6 +317,7 @@ export default function WhisperTranscriptionAssistant() {
             <li>Select the Chrome Tab with your meeting</li>
             <li>Make sure to check "Share tab audio" for other participants</li>
             <li>Enjoy 95-98% accuracy at only $0.006/minute!</li>
+            <li>Note: Audio is processed every 30 seconds to respect API limits</li>
           </ol>
         </div>
 

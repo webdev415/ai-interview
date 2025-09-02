@@ -9,6 +9,7 @@ interface WhisperConfig {
   language?: string;
   temperature?: number;
   responseFormat?: 'json' | 'text' | 'srt' | 'verbose_json' | 'vtt';
+  prompt?: string; // Add prompt for better accuracy with domain-specific terms
 }
 
 interface WhisperSegment {
@@ -78,7 +79,7 @@ export class WhisperService {
   }
 
   /**
-   * Process buffered audio with Whisper
+   * Process buffered audio with Whisper with retry logic
    */
   private async processAudioBuffer(
     onTranscript: (text: string, speaker: string, timestamp: number) => void
@@ -111,21 +112,54 @@ export class WhisperService {
       if (this.config.language) {
         formData.append('language', this.config.language);
       }
-
+      
+      // Add prompt for better accuracy with interview terminology
+      if (this.config.prompt) {
+        formData.append('prompt', this.config.prompt);
+      } else {
+        // Default prompt for interview context
+        formData.append('prompt', 'This is an interview or meeting transcript. Speaker identification: You, Other Participants.');
+      }
+      
+      // Only request segment timestamps to reduce response size
       formData.append('timestamp_granularities[]', 'segment');
-      formData.append('timestamp_granularities[]', 'word');
 
-      // Send to Whisper API
-      const response = await fetch(this.apiUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.apiKey}`
-        },
-        body: formData
-      });
+      // Send to Whisper API with retry logic
+      let response: Response | null = null;
+      let retryCount = 0;
+      const maxRetries = 3;
+      
+      while (retryCount <= maxRetries) {
+        response = await fetch(this.apiUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${this.apiKey}`
+          },
+          body: formData
+        });
 
-      if (!response.ok) {
-        throw new Error(`Whisper API error: ${response.statusText}`);
+        if (response.ok) {
+          break;
+        }
+        
+        // Handle rate limiting with exponential backoff
+        if (response.status === 429 && retryCount < maxRetries) {
+          const waitTime = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+          console.log(`Rate limited (429), retrying in ${waitTime}ms... (Attempt ${retryCount + 1}/${maxRetries})`);
+          await new Promise(resolve => setTimeout(resolve, waitTime));
+          retryCount++;
+        } else if (response.status === 401) {
+          throw new Error('Invalid API key. Please check your OpenAI API key.');
+        } else if (response.status === 400) {
+          const errorData = await response.json();
+          throw new Error(`Bad request: ${errorData.error?.message || response.statusText}`);
+        } else {
+          throw new Error(`Whisper API error: ${response.status} ${response.statusText}`);
+        }
+      }
+      
+      if (!response || !response.ok) {
+        throw new Error(`Failed after ${maxRetries} retries`);
       }
 
       const data: WhisperResponse = await response.json();
@@ -149,6 +183,10 @@ export class WhisperService {
 
     } catch (error) {
       console.error('Whisper processing error:', error);
+      // Don't clear the buffer on error - try again next interval
+      if (error instanceof Error && error.message.includes('429')) {
+        console.log('Rate limited - will retry with next buffer interval');
+      }
     }
   }
 
