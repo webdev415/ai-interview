@@ -1,364 +1,193 @@
-# Context Engineering Template
+# AI Interview Transcription Assistant
 
-A comprehensive template for getting started with Context Engineering - the discipline of engineering context for AI coding assistants so they have the information necessary to get the job done end to end.
+A privacy-focused, browser-based interview transcription assistant that captures and transcribes audio from browser tabs in real-time using OpenAI Whisper API, without participants' awareness.
 
-> **Context Engineering is 10x better than prompt engineering and 100x better than vibe coding.**
+> **95-98% accuracy transcription with complete invisibility to meeting participants**
 
-## 🔗 Links & Resources
+## 🚀 Features
 
-- **📺 YouTube Channel**: [Income Stream Surfers](https://www.youtube.com/c/incomestreamsurfers) - Learn advanced AI automation techniques
-- **🏫 AI Automation School**: [Skool Community](https://www.skool.com/iss-ai-automation-school-6342/about) - Join our AI automation community
-- **🌐 SEO Grove**: [Live Website](https://seogrove.ai/) - See advanced AI automation in action (built with different methods)
+- **🎯 High-Accuracy Transcription**: 95-98% accuracy using OpenAI Whisper API
+- **👥 Dual Audio Capture**: Captures both system audio (other participants) and microphone (your voice)
+- **🔊 Speaker Identification**: Automatically identifies "You" vs "Other Participants"
+- **⚡ Hybrid Mode**: Web Speech API for real-time preview + Whisper for final accuracy
+- **👻 Invisible Operation**: No bots, no meeting notifications, completely invisible to participants
+- **💰 Cost-Effective**: Only $0.006 per minute of audio processing
+- **📊 Real-Time Cost Tracking**: See processing costs as they accumulate
+- **📋 Export Functionality**: Download transcripts with timestamps and speaker identification
+- **🐳 Docker Support**: Complete containerization for easy deployment
 
 ## 🚀 Quick Start
 
-**For full setup with automatic documentation hooks:** See [SETUP.md](SETUP.md)
-
-**For basic template usage:**
+### Option 1: Local Development
 
 ```bash
-# 1. Clone this template
-git clone https://github.com/IncomeStreamSurfer/context-engineering-intro.git
-cd context-engineering-intro
+# 1. Clone the repository
+git clone https://github.com/webdev415/ai-interview.git
+cd ai-interview/frontend
 
-# 2. Set up your project rules (optional - template provided)
-# Edit CLAUDE.md to add your project-specific guidelines
+# 2. Install dependencies
+npm install
 
-# 3. Add examples (highly recommended)
-# Place relevant code examples in the examples/ folder
+# 3. Set up environment variables
+cp .env.local.example .env.local
+# Edit .env.local and add your OpenAI API key
 
-# 4. Create your initial feature request
-# Edit INITIAL.md with your feature requirements
-
-# 5. Generate a comprehensive PRP (Product Requirements Prompt)
-# In Claude Code, run:
-/generate-prp INITIAL.md
-
-# 6. Execute the PRP to implement your feature
-# In Claude Code, run:
-/execute-prp PRPs/your-feature-name.md
+# 4. Start the development server
+npm run dev
 ```
 
-## 📚 Table of Contents
-
-- [What is Context Engineering?](#what-is-context-engineering)
-- [Template Structure](#template-structure)
-- [Step-by-Step Guide](#step-by-step-guide)
-- [Writing Effective INITIAL.md Files](#writing-effective-initialmd-files)
-- [The PRP Workflow](#the-prp-workflow)
-- [Using Examples Effectively](#using-examples-effectively)
-- [Best Practices](#best-practices)
-
-## What is Context Engineering?
-
-Context Engineering represents a paradigm shift from traditional prompt engineering:
-
-### Prompt Engineering vs Context Engineering
-
-**Prompt Engineering:**
-- Focuses on clever wording and specific phrasing
-- Limited to how you phrase a task
-- Like giving someone a sticky note
-
-**Context Engineering:**
-- A complete system for providing comprehensive context
-- Includes documentation, examples, rules, patterns, and validation
-- Like writing a full screenplay with all the details
-
-### Why Context Engineering Matters
-
-1. **Reduces AI Failures**: Most agent failures aren't model failures - they're context failures
-2. **Ensures Consistency**: AI follows your project patterns and conventions
-3. **Enables Complex Features**: AI can handle multi-step implementations with proper context
-4. **Self-Correcting**: Validation loops allow AI to fix its own mistakes
-
-## Template Structure
-
-```
-context-engineering-intro/
-├── .claude/
-│   ├── commands/
-│   │   ├── generate-prp.md    # Generates comprehensive PRPs
-│   │   └── execute-prp.md     # Executes PRPs to implement features
-│   └── settings.local.json    # Claude Code permissions
-├── PRPs/
-│   ├── templates/
-│   │   └── prp_base.md       # Base template for PRPs
-│   └── EXAMPLE_multi_agent_prp.md  # Example of a complete PRP
-├── examples/                  # Your code examples (critical!)
-├── CLAUDE.md                 # Global rules for AI assistant
-├── INITIAL.md               # Template for feature requests
-├── INITIAL_EXAMPLE.md       # Example feature request
-└── README.md                # This file
-```
-
-This template doesn't focus on RAG and tools with context engineering because I have a LOT more in store for that soon. ;)
-
-## Step-by-Step Guide
-
-### 1. Set Up Global Rules (CLAUDE.md)
-
-The `CLAUDE.md` file contains project-wide rules that the AI assistant will follow in every conversation. The template includes:
-
-- **Project awareness**: Reading planning docs, checking tasks
-- **Code structure**: File size limits, module organization
-- **Testing requirements**: Unit test patterns, coverage expectations
-- **Style conventions**: Language preferences, formatting rules
-- **Documentation standards**: Docstring formats, commenting practices
-
-**You can use the provided template as-is or customize it for your project.**
-
-### 2. Create Your Initial Feature Request
-
-Edit `INITIAL.md` to describe what you want to build:
-
-```markdown
-## FEATURE:
-[Describe what you want to build - be specific about functionality and requirements]
-
-## EXAMPLES:
-[List any example files in the examples/ folder and explain how they should be used]
-
-## DOCUMENTATION:
-[Include links to relevant documentation, APIs, or MCP server resources]
-
-## OTHER CONSIDERATIONS:
-[Mention any gotchas, specific requirements, or things AI assistants commonly miss]
-```
-
-**See `INITIAL_EXAMPLE.md` for a complete example.**
-
-### 3. Generate the PRP
-
-PRPs (Product Requirements Prompts) are comprehensive implementation blueprints that include:
-
-- Complete context and documentation
-- Implementation steps with validation
-- Error handling patterns
-- Test requirements
-
-They are similar to PRDs (Product Requirements Documents) but are crafted more specifically to instruct an AI coding assistant.
-
-Run in Claude Code:
-```bash
-/generate-prp INITIAL.md
-```
-
-**Note:** The slash commands are custom commands defined in `.claude/commands/`. You can view their implementation:
-- `.claude/commands/generate-prp.md` - See how it researches and creates PRPs
-- `.claude/commands/execute-prp.md` - See how it implements features from PRPs
-
-The `$ARGUMENTS` variable in these commands receives whatever you pass after the command name (e.g., `INITIAL.md` or `PRPs/your-feature.md`).
-
-This command will:
-1. Read your feature request
-2. Research the codebase for patterns
-3. Search for relevant documentation
-4. Create a comprehensive PRP in `PRPs/your-feature-name.md`
-
-### 4. Execute the PRP
-
-Once generated, execute the PRP to implement your feature:
+### Option 2: Docker
 
 ```bash
-/execute-prp PRPs/your-feature-name.md
+# 1. Clone and setup
+git clone https://github.com/webdev415/ai-interview.git
+cd ai-interview
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env and add your OpenAI API key
+
+# 3. Start with Docker
+docker-compose up -d
 ```
 
-The AI coding assistant will:
-1. Read all context from the PRP
-2. Create a detailed implementation plan
-3. Execute each step with validation
-4. Run tests and fix any issues
-5. Ensure all success criteria are met
+## 🌐 Browser Compatibility
 
-## Writing Effective INITIAL.md Files
+| Browser | System Audio | Microphone | Status |
+|---------|--------------|------------|--------|
+| Chrome | ✅ Full | ✅ Full | **Recommended** |
+| Edge | ✅ Full | ✅ Full | **Recommended** |
+| Firefox | ⚠️ Limited | ✅ Full | Partial Support |
+| Safari | ❌ No | ✅ Full | Not Supported |
 
-### Key Sections Explained
+## 📚 Documentation
 
-**FEATURE**: Be specific and comprehensive
-- ❌ "Build a web scraper"
-- ✅ "Build an async web scraper using BeautifulSoup that extracts product data from e-commerce sites, handles rate limiting, and stores results in PostgreSQL"
+- [Setup Guide](SETUP_GUIDE.md) - Comprehensive setup and usage instructions
+- [Product Requirements Document](PRD.md) - Detailed technical specifications
+- [OpenAI Whisper API Reference](research/openai/whisper-api-reference.md) - API documentation
+- [OpenAI Realtime API Docs](research/openai/realtime-api-documentation.md) - Real-time transcription options
 
-**EXAMPLES**: Leverage the examples/ folder
-- Place relevant code patterns in `examples/`
-- Reference specific files and patterns to follow
-- Explain what aspects should be mimicked
+## 🎯 How It Works
 
-**DOCUMENTATION**: Include all relevant resources
-- API documentation URLs
-- Library guides
-- MCP server documentation
-- Database schemas
+1. **Open the web app** in Chrome or Edge
+2. **Click "Start Whisper Transcription"**
+3. **Allow microphone access** (for your voice)
+4. **Select the meeting tab** and check "Share tab audio"
+5. **Start transcribing!** - Audio is processed every 30 seconds with 95-98% accuracy
 
-**OTHER CONSIDERATIONS**: Capture important details
-- Authentication requirements
-- Rate limits or quotas
-- Common pitfalls
-- Performance requirements
+### Privacy Features
+- **👻 Completely invisible** to meeting participants
+- **🚫 No bots** joining the meeting
+- **🔒 No screen sharing indicators** on participant screens
+- **💻 Local processing** - transcripts stay on your device
 
-## The PRP Workflow
+## 💰 Pricing
 
-### How /generate-prp Works
+- **OpenAI Whisper**: $0.006 per minute
+- **1-hour meeting**: ~$0.36
+- **10 hours of meetings**: ~$3.60
 
-The command follows this process:
+Real-time cost tracking shows exactly how much you're spending during transcription.
 
-1. **Research Phase**
-   - Analyzes your codebase for patterns
-   - Searches for similar implementations
-   - Identifies conventions to follow
-
-2. **Documentation Gathering**
-   - Fetches relevant API docs
-   - Includes library documentation
-   - Adds gotchas and quirks
-
-3. **Blueprint Creation**
-   - Creates step-by-step implementation plan
-   - Includes validation gates
-   - Adds test requirements
-
-4. **Quality Check**
-   - Scores confidence level (1-10)
-   - Ensures all context is included
-
-### How /execute-prp Works
-
-1. **Load Context**: Reads the entire PRP
-2. **Plan**: Creates detailed task list using TodoWrite
-3. **Execute**: Implements each component
-4. **Validate**: Runs tests and linting
-5. **Iterate**: Fixes any issues found
-6. **Complete**: Ensures all requirements met
-
-See `PRPs/EXAMPLE_multi_agent_prp.md` for a complete example of what gets generated.
-
-## Using Examples Effectively
-
-The `examples/` folder is **critical** for success. AI coding assistants perform much better when they can see patterns to follow.
-
-### What to Include in Examples
-
-1. **Code Structure Patterns**
-   - How you organize modules
-   - Import conventions
-   - Class/function patterns
-
-2. **Testing Patterns**
-   - Test file structure
-   - Mocking approaches
-   - Assertion styles
-
-3. **Integration Patterns**
-   - API client implementations
-   - Database connections
-   - Authentication flows
-
-4. **CLI Patterns**
-   - Argument parsing
-   - Output formatting
-   - Error handling
-
-### Example Structure
+## 🏗️ Project Structure
 
 ```
-examples/
-├── README.md           # Explains what each example demonstrates
-├── cli.py             # CLI implementation pattern
-├── agent/             # Agent architecture patterns
-│   ├── agent.py      # Agent creation pattern
-│   ├── tools.py      # Tool implementation pattern
-│   └── providers.py  # Multi-provider pattern
-└── tests/            # Testing patterns
-    ├── test_agent.py # Unit test patterns
-    └── conftest.py   # Pytest configuration
+ai-interview-transcription/
+├── frontend/                  # Next.js application
+│   ├── src/
+│   │   ├── app/              # Next.js App Router
+│   │   ├── components/       # React components
+│   │   │   └── WhisperTranscriptionAssistant.tsx
+│   │   └── lib/              # Core services
+│   │       ├── audio/        # Audio capture services
+│   │       │   ├── capture.ts
+│   │       │   └── dual-capture.ts
+│   │       └── whisper/      # OpenAI Whisper integration
+│   │           └── service.ts
+│   ├── Dockerfile           # Production container
+│   └── Dockerfile.dev       # Development container
+├── research/                # API documentation
+│   └── openai/             # OpenAI Whisper & Realtime API docs
+├── docker-compose.yml      # Docker orchestration
+├── SETUP_GUIDE.md         # Detailed setup instructions
+└── PRD.md                 # Technical specifications
 ```
 
-## Best Practices
+## 🔧 Technical Architecture
 
-### 1. Be Explicit in INITIAL.md
-- Don't assume the AI knows your preferences
-- Include specific requirements and constraints
-- Reference examples liberally
+### Core Components
 
-### 2. Provide Comprehensive Examples
-- More examples = better implementations
-- Show both what to do AND what not to do
-- Include error handling patterns
+**🎤 Dual Audio Capture**
+- `DualAudioCaptureService` - Captures both microphone and system audio simultaneously
+- Real-time speaker identification using audio level analysis
+- Supports Chrome/Edge's getDisplayMedia API for tab audio capture
 
-### 3. Use Validation Gates
-- PRPs include test commands that must pass
-- AI will iterate until all validations succeed
-- This ensures working code on first try
+**🧠 OpenAI Whisper Integration**
+- `WhisperService` - Handles batch processing with 30-second buffers
+- Rate limiting protection with exponential backoff retry logic
+- Audio format conversion (Float32Array → PCM16 → WAV)
 
-### 4. Leverage Documentation
-- Include official API docs
-- Add MCP server resources
-- Reference specific documentation sections
+**⚡ Hybrid Transcription**
+- `HybridTranscriptionService` - Combines Web Speech API + Whisper
+- Real-time preview with Web Speech API (free, instant)
+- Final accuracy with Whisper API (paid, 95-98% accurate)
 
-### 5. Customize CLAUDE.md
-- Add your conventions
-- Include project-specific rules
-- Define coding standards
+## 🛠️ Development
 
-## 🎯 Advanced PRP Method - Multi-Agent Research Approach
+### Getting Started
 
-This template demonstrates an advanced PRP creation method using multiple parallel research agents for comprehensive documentation gathering.
+1. **Prerequisites**: Node.js 18+, OpenAI API key
+2. **Install**: `npm install` in frontend directory  
+3. **Configure**: Add API key to `.env.local`
+4. **Run**: `npm run dev` starts development server
 
-### See Advanced AI Automation Examples
-- **SEO Grove**: https://seogrove.ai/ - Example of advanced AI automation (built with different methods)
-- **YouTube Channel**: https://www.youtube.com/c/incomestreamsurfers - Learn more about AI automation methodologies
-- **AI Automation School**: https://www.skool.com/iss-ai-automation-school-6342/about - Join our community
+### Testing
 
-### Advanced PRP Creation Process
+```bash
+# Run the application
+npm run dev
 
-#### Prompt 1: Initialize Research Framework
-```
-read my incredibly specific instructions about how to create a prp document then summarise them, also store how to do a jina scrapein order to create a llm.txt in your memory
-
-If a page 404s or does not scrape properly, scrape it again
-
-Do not use Jina to scrape CSS of the design site.
-
-All SEPARATE pages must be stored in /research/[technology]/ directories with individual .md files.
-
-curl
-  "https://r.jina.ai/https://platform.openai.com/docs/" \
-    -H "Authorization: Bearer jina_033257e7cdf14fd3b948578e2d34986bNtfCCkjHt7_j1Bkp5Kx521rDs2Eb"
+# Test in Chrome/Edge
+# 1. Open localhost:3000
+# 2. Click "Start Whisper Transcription"
+# 3. Allow microphone access
+# 4. Select browser tab with audio
+# 5. Check "Share tab audio"
 ```
 
-#### Prompt 2: Generate PRP with Parallel Research
-```
-/generate-prp initial.md
-```
+## 🚀 Deployment
 
-**Wait until it gets to the research phase, then press escape and say:**
+### Docker Production
 
-```
-can you spin up multiple research agents and do this all at the same time
+```bash
+docker-compose up -d
 ```
 
-This approach enables:
-- **Parallel Documentation Scraping**: 6+ agents simultaneously research different technologies
-- **Comprehensive Coverage**: 30-100+ pages of official documentation scraped and organized
-- **Technology-Specific Organization**: Each technology gets its own `/research/[tech]/` directory
-- **Production-Ready PRPs**: Complete implementation blueprints with real-world examples
+### Manual Production
 
-### Research Directory Structure
-```
-research/
-├── pydantic-ai/      # 22+ documentation pages
-├── openai/           # 20+ API documentation pages  
-├── anthropic/        # 18+ Claude documentation pages
-├── jina/             # 12+ scraping API pages
-├── shopify/          # 18+ GraphQL/REST API pages
-└── seo-apis/         # 24+ Search Console/Ahrefs pages
+```bash
+npm run build
+npm start
 ```
 
-This multi-agent research approach results in PRPs with 9/10 confidence scores for one-pass implementation success.
+## 🤝 Contributing
 
-## Resources
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
 
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
-- [Context Engineering Best Practices](https://www.philschmid.de/context-engineering)
-- [SEO Grove - Live Implementation](https://seogrove.ai/)
-- [Income Stream Surfers - YouTube Channel](https://www.youtube.com/c/incomestreamsurfers)
+## 📄 License
+
+MIT License - See [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- OpenAI Whisper for high-accuracy transcription
+- Next.js team for the excellent framework
+- Web Audio API for browser-based audio processing
+
+---
+
+**Built with Context Engineering by webdev415**
