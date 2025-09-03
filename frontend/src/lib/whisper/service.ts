@@ -36,10 +36,11 @@ export class WhisperService {
   private apiKey: string;
   private apiUrl = 'https://api.openai.com/v1/audio/transcriptions';
   private audioBuffer: Float32Array[] = [];
+  private speakerBuffer: string[] = []; // Track speaker for each audio chunk
   private isRecording: boolean = false;
   private processInterval: NodeJS.Timeout | null = null;
   private lastProcessedTime: number = 0;
-  private currentSpeaker: string = 'Unknown';
+  private currentSpeaker: string = 'Others'; // Default to Others, will be updated by dual-capture
 
   constructor(private config: WhisperConfig) {
     this.apiKey = config.apiKey;
@@ -58,6 +59,7 @@ export class WhisperService {
   ): void {
     this.isRecording = true;
     this.audioBuffer = [];
+    this.speakerBuffer = [];
     this.lastProcessedTime = Date.now();
 
     // Process audio buffer periodically
@@ -74,7 +76,11 @@ export class WhisperService {
   addAudioData(audioData: Float32Array, speaker: string): void {
     if (this.isRecording) {
       this.audioBuffer.push(audioData);
-      this.currentSpeaker = speaker;
+      this.speakerBuffer.push(speaker);
+      // Update current speaker only if it's not Silent
+      if (speaker !== 'Silent') {
+        this.currentSpeaker = speaker;
+      }
     }
   }
 
@@ -97,8 +103,21 @@ export class WhisperService {
         offset += chunk.length;
       }
 
-      // Clear buffer
+      // Check if audio contains actual speech (not just silence)
+      const audioLevel = this.calculateAudioLevel(combinedAudio);
+      if (audioLevel < 0.01) {
+        console.log('Skipping silent audio buffer');
+        this.audioBuffer = [];
+        this.speakerBuffer = [];
+        return;
+      }
+
+      // Determine dominant speaker for this buffer
+      const dominantSpeaker = this.getDominantSpeaker();
+      
+      // Clear buffers
       this.audioBuffer = [];
+      this.speakerBuffer = [];
 
       // Convert to WAV format
       const wavBlob = this.convertToWav(combinedAudio, 48000);
@@ -114,11 +133,9 @@ export class WhisperService {
       }
       
       // Add prompt for better accuracy with interview terminology
+      // Keep prompt minimal to avoid it being returned as transcription
       if (this.config.prompt) {
         formData.append('prompt', this.config.prompt);
-      } else {
-        // Default prompt for interview context
-        formData.append('prompt', 'This is an interview or meeting transcript. Speaker identification: You, Other Participants.');
       }
       
       // Only request segment timestamps to reduce response size
@@ -167,16 +184,29 @@ export class WhisperService {
       // Process segments with speaker information
       if (data.segments) {
         for (const segment of data.segments) {
-          if (segment.text.trim()) {
+          const text = segment.text.trim();
+          // Filter out prompt echoes and very short/empty segments
+          if (text && 
+              text.length > 2 && 
+              !text.toLowerCase().includes('interview or meeting transcript') &&
+              !text.toLowerCase().includes('speaker identification') &&
+              segment.no_speech_prob < 0.5) { // Only include if speech was likely detected
             onTranscript(
-              segment.text.trim(),
-              this.currentSpeaker,
+              text,
+              dominantSpeaker,
               this.lastProcessedTime + (segment.start * 1000)
             );
           }
         }
       } else if (data.text) {
-        onTranscript(data.text, this.currentSpeaker, Date.now());
+        const text = data.text.trim();
+        // Filter out prompt echoes
+        if (text && 
+            text.length > 2 && 
+            !text.toLowerCase().includes('interview or meeting transcript') &&
+            !text.toLowerCase().includes('speaker identification')) {
+          onTranscript(text, dominantSpeaker, Date.now());
+        }
       }
 
       this.lastProcessedTime = Date.now();
@@ -188,6 +218,46 @@ export class WhisperService {
         console.log('Rate limited - will retry with next buffer interval');
       }
     }
+  }
+
+  /**
+   * Calculate RMS audio level to detect silence
+   */
+  private calculateAudioLevel(audioData: Float32Array): number {
+    let sum = 0;
+    for (let i = 0; i < audioData.length; i++) {
+      sum += audioData[i] * audioData[i];
+    }
+    return Math.sqrt(sum / audioData.length);
+  }
+
+  /**
+   * Determine the dominant speaker for the buffer
+   */
+  private getDominantSpeaker(): string {
+    if (this.speakerBuffer.length === 0) {
+      return this.currentSpeaker;
+    }
+    
+    // Count speaker occurrences
+    const speakerCounts: { [key: string]: number } = {};
+    for (const speaker of this.speakerBuffer) {
+      if (speaker !== 'Silent') {
+        speakerCounts[speaker] = (speakerCounts[speaker] || 0) + 1;
+      }
+    }
+    
+    // Find dominant speaker
+    let maxCount = 0;
+    let dominant = this.currentSpeaker;
+    for (const [speaker, count] of Object.entries(speakerCounts)) {
+      if (count > maxCount) {
+        maxCount = count;
+        dominant = speaker;
+      }
+    }
+    
+    return dominant;
   }
 
   /**

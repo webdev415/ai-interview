@@ -58,8 +58,8 @@ export default function WhisperTranscriptionAssistant() {
       whisperService.current = new WhisperService({
         apiKey,
         model: 'whisper-1',
-        language: 'en',
-        prompt: 'This is an interview or meeting transcript. Clear speech with multiple speakers.'
+        language: 'en'
+        // Removed prompt to avoid it being returned as false transcription
       });
     } else {
       hybridService.current = new HybridTranscriptionService(apiKey);
